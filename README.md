@@ -9,7 +9,7 @@
 
 Ứng dụng desktop cho MySQL và MariaDB — kết nối trực tiếp hoặc qua SSH, duyệt dữ liệu, viết SQL và quản lý cấu trúc bảng trong một nơi.
 
-[⬇️ Tải ShuraDB mới nhất](https://github.com/hienl-019/shuradb-releases/releases/latest) · [Xem tất cả phiên bản](https://github.com/hienl-019/shuradb-releases/releases) · [Báo lỗi](https://github.com/hienl-019/shuradb-releases/issues)
+[🌐 Trang tải ShuraDB](https://hienl-019.github.io/shuradb-releases/) · [⬇️ Tải trực tiếp](https://github.com/hienl-019/shuradb-releases/releases/latest) · [Xem tất cả phiên bản](https://github.com/hienl-019/shuradb-releases/releases) · [Báo lỗi](https://github.com/hienl-019/shuradb-releases/issues)
 
 **Windows 10/11 · x64**
 

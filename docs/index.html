@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f5f7ef" />
+    <link rel="icon" type="image/x-icon" href="./favicon.ico" />
+    <meta
+      name="description"
+      content="ShuraDB — ứng dụng desktop gọn gàng để duyệt dữ liệu, viết SQL và quản lý MySQL, MariaDB. Tải miễn phí cho Windows."
+    />
+    <title>ShuraDB — Làm việc với database, nhẹ nhàng hơn</title>
+    <style>
+      :root {
+        color-scheme: light;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        background: #f5f7ef;
+        color: #17231b;
+        font-synthesis: none;
+        text-rendering: optimizeLegibility;
+        --bg: #f5f7ef;
+        --panel: #ffffff;
+        --panel-light: #edf4e9;
+        --line: rgba(31, 58, 39, 0.13);
+        --muted: #657468;
+        --lime: #b8e967;
+        --mint: #347b55;
+        --mono: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+      }
+
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body { margin: 0; min-width: 320px; background: radial-gradient(ellipse 44% 32% at 82% 20%, rgba(255, 174, 112, 0.2), transparent 76%), radial-gradient(ellipse 46% 30% at 8% 2%, rgba(182, 233, 103, 0.22), transparent 78%), var(--bg); }
+      a { color: inherit; }
+      button, a { -webkit-tap-highlight-color: transparent; }
+      .shell { width: min(1160px, calc(100% - 48px)); margin-inline: auto; }
+
+      .topbar {
+        height: 76px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid var(--line);
+      }
+      .brand { display: inline-flex; align-items: center; gap: 11px; text-decoration: none; font-weight: 720; letter-spacing: -0.04em; }
+      .brand-icon { width: 40px; height: 40px; display: block; object-fit: contain; }
+      .brand-name { font-size: 19px; }
+      .nav { display: flex; align-items: center; gap: 30px; font-size: 13px; color: var(--muted); }
+      .nav a { text-decoration: none; transition: color 160ms ease; }
+      .nav a:hover { color: #39764a; }
+      .nav .nav-cta { color: #39764a; }
+
+      .hero { display: grid; grid-template-columns: 0.95fr 1.05fr; gap: 52px; align-items: center; padding: 86px 0 80px; }
+      .eyebrow { display: inline-flex; align-items: center; gap: 9px; color: #478950; text-transform: uppercase; letter-spacing: 0.13em; font: 11px var(--mono); }
+      .eyebrow::before { content: ''; width: 22px; height: 1px; background: currentColor; }
+      h1 { max-width: 620px; margin: 20px 0 19px; font-size: clamp(46px, 6.3vw, 76px); line-height: 0.99; letter-spacing: -0.075em; font-weight: 650; }
+      h1 span { color: #468b51; }
+      .lead { max-width: 470px; margin: 0; color: #58675c; font-size: 16px; line-height: 1.75; }
+      .download-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-top: 29px; }
+      .button { display: inline-flex; min-height: 50px; align-items: center; justify-content: center; gap: 10px; padding: 0 19px; border: 1px solid transparent; border-radius: 9px; text-decoration: none; font-size: 14px; font-weight: 680; transition: transform 160ms ease, background 160ms ease, border-color 160ms ease; }
+      .button:hover { transform: translateY(-2px); }
+      .button-primary { background: var(--lime); color: #17200f; }
+      .button-primary:hover { background: #d7fb8b; }
+      .button-secondary { border-color: var(--line); color: #26392c; background: rgba(255,255,255,0.75); }
+      .button-secondary:hover { border-color: rgba(53, 112, 69, 0.4); background: #fff; }
+      .button svg { width: 17px; height: 17px; }
+      .button[aria-disabled='true'] { opacity: 0.75; }
+      .download-meta { display: flex; flex-wrap: wrap; gap: 10px 16px; margin-top: 15px; color: var(--muted); font: 11px var(--mono); }
+      .download-meta span { display: inline-flex; align-items: center; gap: 6px; }
+      .download-meta svg { width: 13px; height: 13px; color: var(--mint); }
+      .release-note { min-height: 17px; margin-top: 8px; color: #748174; font-size: 11px; }
+
+      .visual { position: relative; min-width: 0; }
+      .visual::before { content: ''; position: absolute; z-index: 0; width: 75%; aspect-ratio: 1; right: 0; top: 50%; transform: translateY(-50%); border-radius: 50%; background: rgba(153, 205, 95, 0.1); filter: blur(75px); }
+      .app-window { --line: rgba(237, 242, 229, 0.11); position: relative; z-index: 1; overflow: hidden; border: 1px solid rgba(31, 58, 39, 0.15); border-radius: 14px; background: #141916; box-shadow: 0 30px 90px rgba(43, 71, 43, 0.2), 0 0 0 7px rgba(255,255,255,0.55); transform: perspective(1100px) rotateY(-5deg) rotateX(2deg); }
+      .window-top { height: 42px; display: flex; align-items: center; gap: 7px; padding: 0 14px; border-bottom: 1px solid var(--line); color: #849086; font: 10px var(--mono); }
+      .dot { width: 7px; height: 7px; border-radius: 50%; background: #566057; }
+      .dot:first-child { background: #c97868; }
+      .dot:nth-child(2) { background: #c7a75c; }
+      .dot:nth-child(3) { background: #8cae69; margin-right: 7px; }
+      .window-title { margin-left: auto; margin-right: auto; }
+      .app-body { min-height: 314px; display: grid; grid-template-columns: 142px 1fr; }
+      .sidebar { padding: 15px 10px; border-right: 1px solid var(--line); color: #929d92; font: 10px var(--mono); }
+      .side-label { margin: 4px 7px 11px; color: #788278; text-transform: uppercase; letter-spacing: 0.12em; font-size: 8px; }
+      .tree-row { display: flex; align-items: center; gap: 7px; padding: 8px 7px; border-radius: 5px; }
+      .tree-row.active { background: rgba(200,241,105,0.11); color: var(--lime); }
+      .tree-row svg { width: 12px; height: 12px; opacity: 0.8; }
+      .editor { min-width: 0; display: flex; flex-direction: column; }
+      .tabline { display: flex; align-items: center; gap: 9px; height: 37px; padding: 0 13px; border-bottom: 1px solid var(--line); color: #a8b0a6; font: 9px var(--mono); }
+      .tabline span:first-child { color: #f1f1e7; }
+      .grid-head, .grid-row { display: grid; grid-template-columns: 0.7fr 1fr 0.82fr; gap: 8px; padding: 9px 13px; font: 9px var(--mono); }
+      .grid-head { margin-top: 12px; color: #869186; border-bottom: 1px solid var(--line); }
+      .grid-row { color: #d4dbd1; border-bottom: 1px solid rgba(237,242,229,0.055); }
+      .grid-row span:first-child { color: var(--mint); }
+      .grid-row span:last-child { color: #a6b46d; }
+      .sql-bar { margin: auto 12px 12px; padding: 10px 11px; border: 1px solid rgba(200,241,105,0.16); border-radius: 7px; background: #111512; color: #aab5a7; font: 9px/1.7 var(--mono); }
+      .sql-bar b { color: #b8d978; font-weight: 500; }
+      .sql-bar em { color: #85bacc; font-style: normal; }
+      .statusline { display: flex; justify-content: space-between; padding: 8px 13px; color: #7d887d; border-top: 1px solid var(--line); font: 8px var(--mono); }
+      .float-card { position: absolute; z-index: 2; right: -22px; bottom: 22px; display: flex; align-items: center; gap: 10px; padding: 11px 14px; border: 1px solid rgba(237,242,229,0.13); border-radius: 9px; background: #202722; box-shadow: 0 14px 38px rgba(0,0,0,0.3); }
+      .float-icon { width: 28px; height: 28px; display: grid; place-items: center; border-radius: 7px; background: rgba(200,241,105,0.14); color: var(--lime); }
+      .float-icon svg { width: 15px; height: 15px; }
+      .float-copy strong, .float-copy small { display: block; }
+      .float-copy strong { font-size: 10px; }
+      .float-copy small { margin-top: 3px; color: #95a095; font: 9px var(--mono); }
+
+      .strip { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 19px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); color: var(--muted); font-size: 12px; }
+      .strip strong { color: #283a2d; font-weight: 620; }
+      .strip-items { display: flex; gap: clamp(18px, 4vw, 48px); }
+      .strip-items span { display: inline-flex; align-items: center; gap: 8px; }
+      .strip-items svg { width: 15px; height: 15px; color: #4b9657; }
+
+      section.content { padding: 94px 0; }
+      .section-head { display: flex; justify-content: space-between; gap: 36px; align-items: end; margin-bottom: 30px; }
+      .section-kicker { color: #468950; text-transform: uppercase; letter-spacing: 0.13em; font: 10px var(--mono); }
+      h2 { max-width: 510px; margin: 11px 0 0; font-size: clamp(31px, 4vw, 45px); line-height: 1.05; letter-spacing: -0.06em; font-weight: 590; }
+      .section-head p { max-width: 360px; margin: 0 0 3px; color: var(--muted); font-size: 13px; line-height: 1.75; }
+      .feature-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+      .feature { min-height: 178px; padding: 20px 19px; border: 1px solid rgba(35, 76, 43, 0.11); border-radius: 10px; background: linear-gradient(145deg, #ffffff, #f0f5e9); box-shadow: 0 10px 28px rgba(38, 65, 42, 0.045); }
+      .feature-icon { width: 30px; height: 30px; display: grid; place-items: center; margin-bottom: 21px; border: 1px solid rgba(67, 138, 76, 0.22); border-radius: 8px; color: #478950; background: #eef7e5; }
+      .feature-icon svg { width: 15px; height: 15px; }
+      .feature h3 { margin: 0 0 8px; font-size: 14px; font-weight: 610; letter-spacing: -0.02em; }
+      .feature p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.65; }
+
+      .workflow { display: grid; grid-template-columns: 1fr 1fr; gap: 52px; align-items: center; padding: 30px; border: 1px solid rgba(35, 76, 43, 0.12); border-radius: 14px; background: radial-gradient(75% 130% at 100% 0%, rgba(190, 235, 120, 0.27), transparent 65%), radial-gradient(65% 110% at 0% 100%, rgba(255, 190, 145, 0.2), transparent 70%), #fff; box-shadow: 0 20px 55px rgba(38, 65, 42, 0.06); }
+      .workflow h2 { font-size: clamp(29px, 3.5vw, 40px); }
+      .workflow-copy > p { color: var(--muted); font-size: 13px; line-height: 1.75; }
+      .steps { display: grid; gap: 17px; margin-top: 24px; }
+      .step { display: grid; grid-template-columns: 28px 1fr; gap: 11px; align-items: start; }
+      .step-num { width: 25px; height: 25px; display: grid; place-items: center; border: 1px solid rgba(67, 138, 76, 0.34); border-radius: 50%; color: #43864d; background: #f1f8e9; font: 10px var(--mono); }
+      .step strong { display: block; margin: 2px 0 4px; font-size: 12px; font-weight: 620; }
+      .step p { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.6; }
+      .code-card { --line: rgba(237, 242, 229, 0.11); overflow: hidden; border: 1px solid rgba(24, 42, 28, 0.16); border-radius: 9px; background: #19231c; box-shadow: 0 16px 40px rgba(24, 42, 28, 0.16); }
+      .code-head { display: flex; justify-content: space-between; padding: 12px 14px; border-bottom: 1px solid var(--line); color: #879286; font: 9px var(--mono); }
+      .code-content { padding: 17px 16px; color: #c5cec1; font: 10px/2 var(--mono); }
+      .code-content .muted { color: #687368; }
+      .code-content .key { color: #c8f169; }
+      .code-content .op { color: #8eb8ca; }
+      .code-content .val { color: #deb07b; }
+      .code-foot { padding: 10px 14px; border-top: 1px solid var(--line); color: #859184; font: 9px var(--mono); }
+
+      .download-section { display: grid; grid-template-columns: 1fr auto; gap: 30px; align-items: center; padding: 30px; border: 1px solid rgba(67, 138, 76, 0.21); border-radius: 13px; background: radial-gradient(80% 140% at 95% 0%, rgba(192, 237, 128, 0.36), transparent 75%), linear-gradient(110deg, #fff, #f5f9ee 70%); box-shadow: 0 16px 42px rgba(38, 65, 42, 0.07); }
+      .download-section h2 { font-size: 29px; }
+      .download-section p { margin: 9px 0 0; color: var(--muted); font-size: 12px; line-height: 1.6; }
+      .download-section .button { white-space: nowrap; }
+
+      footer { padding: 24px 0 30px; border-top: 1px solid var(--line); }
+      .footer-row { display: flex; justify-content: space-between; align-items: center; gap: 18px; color: #69766b; font-size: 10px; }
+      .footer-links { display: flex; gap: 18px; }
+      .footer-links a { color: #526458; text-decoration: none; }
+      .footer-links a:hover { color: var(--lime); }
+
+      @media (max-width: 900px) {
+        .hero { grid-template-columns: 1fr; gap: 42px; padding-top: 70px; }
+        .hero-copy { max-width: 650px; }
+        .visual { width: min(650px, calc(100% - 20px)); margin-inline: auto; }
+        .app-window { transform: none; }
+        .feature-grid { grid-template-columns: repeat(2, 1fr); }
+      }
+      @media (max-width: 620px) {
+        .shell { width: min(100% - 32px, 520px); }
+        .topbar { height: 64px; }
+        .nav { gap: 15px; font-size: 11px; }
+        .nav a:nth-child(1), .nav a:nth-child(2) { display: none; }
+        .hero { padding: 55px 0 56px; gap: 36px; }
+        h1 { font-size: clamp(43px, 13vw, 62px); }
+        .lead { font-size: 14px; }
+        .download-row { align-items: stretch; }
+        .download-row .button { flex: 1; padding-inline: 13px; font-size: 12px; }
+        .download-meta { font-size: 9px; }
+        .app-body { grid-template-columns: 100px 1fr; min-height: 275px; }
+        .sidebar { padding-inline: 6px; font-size: 8px; }
+        .tree-row { gap: 4px; padding-inline: 5px; }
+        .grid-head, .grid-row { gap: 4px; padding-inline: 7px; font-size: 7px; }
+        .sql-bar { margin-inline: 7px; font-size: 7px; }
+        .float-card { right: -7px; bottom: 10px; padding: 8px 10px; }
+        .strip { align-items: start; flex-direction: column; gap: 13px; font-size: 10px; }
+        .strip-items { width: 100%; justify-content: space-between; gap: 7px; font-size: 9px; }
+        section.content { padding: 66px 0; }
+        .section-head { display: block; }
+        .section-head p { margin-top: 14px; }
+        .feature-grid { gap: 8px; }
+        .feature { min-height: 164px; padding: 15px 13px; }
+        .feature-icon { margin-bottom: 16px; }
+        .feature h3 { font-size: 12px; }
+        .feature p { font-size: 10px; }
+        .workflow { grid-template-columns: 1fr; gap: 24px; padding: 21px 16px; }
+        .download-section { grid-template-columns: 1fr; padding: 22px 17px; }
+        .download-section h2 { font-size: 25px; }
+        .download-section .button { width: 100%; }
+        .footer-row { align-items: start; flex-direction: column; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="shell topbar">
+      <a class="brand" href="#top" aria-label="ShuraDB trang chủ">
+        <img class="brand-icon" src="./favicon.ico" alt="" width="40" height="40" />
+        <span class="brand-name">ShuraDB</span>
+      </a>
+      <nav class="nav" aria-label="Điều hướng chính">
+        <a href="#tinh-nang">Tính năng</a>
+        <a href="#bat-dau">Bắt đầu</a>
+        <a href="https://github.com/hienl-019/shuradb-releases/releases/latest" target="_blank" rel="noreferrer">Release notes ↗</a>
+        <a class="nav-cta" href="#tai-ve">Tải ứng dụng ↓</a>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section class="shell hero" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <div class="eyebrow">MySQL · MariaDB · Windows</div>
+          <h1 id="hero-title">Database work,<br /><span>without the drag.</span></h1>
+          <p class="lead">Một không gian gọn gàng để kết nối, xem dữ liệu và viết SQL. Tập trung vào công việc, không phải loay hoay giữa nhiều cửa sổ.</p>
+          <div class="download-row" id="tai-ve">
+            <a class="button button-primary" id="download-main" href="https://github.com/hienl-019/shuradb-releases/releases/latest" target="_blank" rel="noreferrer">
+              <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 2.8v9.1m0 0 3.3-3.3M10 11.9 6.7 8.6M3.8 13.7v2.5h12.4v-2.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span id="download-label">Tải cho Windows</span>
+            </a>
+            <a class="button button-secondary" href="https://github.com/hienl-019/shuradb-releases/releases" target="_blank" rel="noreferrer">Xem tất cả phiên bản ↗</a>
+          </div>
+          <div class="download-meta">
+            <span><svg viewBox="0 0 16 16" fill="none"><path d="m3 8.2 3.1 3.1L13 4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="version">Đang kiểm tra phiên bản mới nhất…</span></span>
+            <span>Windows 10 / 11 · x64</span>
+            <span>Miễn phí</span>
+          </div>
+          <div class="release-note" id="release-note" aria-live="polite"></div>
+        </div>
+
+        <div class="visual" aria-label="Minh họa giao diện ShuraDB">
+          <div class="app-window">
+            <div class="window-top"><i class="dot"></i><i class="dot"></i><i class="dot"></i><span class="window-title">ShuraDB <span id="mock-version">· MySQL connection</span></span></div>
+            <div class="app-body">
+              <aside class="sidebar">
+                <div class="side-label">Connections</div>
+                <div class="tree-row active"><svg viewBox="0 0 16 16" fill="none"><ellipse cx="8" cy="4" rx="5" ry="2" stroke="currentColor"/><path d="M3 4v7c0 1.1 2.2 2 5 2s5-.9 5-2V4" stroke="currentColor"/></svg>local-dev</div>
+                <div class="tree-row"><svg viewBox="0 0 16 16" fill="none"><path d="M3 4.5h10v8H3zM5 2.5v2m6-2v2" stroke="currentColor"/></svg>app_data</div>
+                <div class="tree-row"><svg viewBox="0 0 16 16" fill="none"><path d="M3 4.5h10v8H3zM5 2.5v2m6-2v2" stroke="currentColor"/></svg>customers</div>
+                <div class="tree-row"><svg viewBox="0 0 16 16" fill="none"><path d="M3 4.5h10v8H3zM5 2.5v2m6-2v2" stroke="currentColor"/></svg>orders</div>
+              </aside>
+              <div class="editor">
+                <div class="tabline"><span>customers</span><span>×</span><span>query.sql</span><span>＋</span></div>
+                <div class="grid-head"><span>id</span><span>name</span><span>status</span></div>
+                <div class="grid-row"><span>1001</span><span>Minh Anh</span><span>active</span></div>
+                <div class="grid-row"><span>1002</span><span>Quốc Bảo</span><span>active</span></div>
+                <div class="grid-row"><span>1003</span><span>Thu Hà</span><span>pending</span></div>
+                <div class="grid-row"><span>1004</span><span>Gia Huy</span><span>active</span></div>
+                <div class="sql-bar"><b>SELECT</b> id, name, status<br /><b>FROM</b> <em>customers</em><br /><b>ORDER BY</b> id <em>DESC</em>;</div>
+              </div>
+            </div>
+            <div class="statusline"><span>4 rows · 0.014s</span><span>Connected · MySQL</span></div>
+          </div>
+          <div class="float-card"><span class="float-icon"><svg viewBox="0 0 18 18" fill="none"><path d="M3 9h12M9 3v12M4.8 4.8l8.4 8.4m0-8.4-8.4 8.4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></span><span class="float-copy"><strong>SSH tunnel</strong><small>Secure connection</small></span></div>
+        </div>
+      </section>
+
+      <div class="shell strip">
+        <strong>Một công cụ cho cả vòng lặp database.</strong>
+        <div class="strip-items">
+          <span><svg viewBox="0 0 16 16" fill="none"><path d="M2.5 3.5h11v9h-11zM5 6.5h6M5 9.5h3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Khám phá dữ liệu</span>
+          <span><svg viewBox="0 0 16 16" fill="none"><path d="m5.5 4-3 4 3 4m5-8 3 4-3 4M9.5 2.5l-3 11" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Viết SQL</span>
+          <span><svg viewBox="0 0 16 16" fill="none"><path d="M3 3h10v10H3zM3 6h10M6 6v7m4-7v7" stroke="currentColor" stroke-width="1.2"/></svg>Quản lý schema</span>
+        </div>
+      </div>
+
+      <section class="shell content" id="tinh-nang">
+        <div class="section-head">
+          <div><div class="section-kicker">Gọn trong một cửa sổ</div><h2>Mọi thứ cần cho một phiên làm việc rõ ràng.</h2></div>
+          <p>Từ lúc kết nối đến khi thay đổi schema, giữ các thao tác database quen thuộc trong cùng một ứng dụng desktop.</p>
+        </div>
+        <div class="feature-grid">
+          <article class="feature"><span class="feature-icon"><svg viewBox="0 0 18 18" fill="none"><path d="M2.5 3.5h13v11h-13zM2.5 7h13M6.8 7v7.5m4.4-7.5v7.5" stroke="currentColor" stroke-width="1.3"/></svg></span><h3>Duyệt và sửa dữ liệu</h3><p>Lọc bản ghi, xem nội dung theo cột và chỉnh sửa theo lô ngay trong data grid.</p></article>
+          <article class="feature"><span class="feature-icon"><svg viewBox="0 0 18 18" fill="none"><path d="m6 4.5-3.5 4.5L6 13.5m6-9 3.5 4.5-3.5 4.5M10.5 3l-3 12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><h3>SQL editor theo schema</h3><p>Viết và chạy truy vấn với tô màu cú pháp, gợi ý ngữ cảnh và chọn database.</p></article>
+          <article class="feature"><span class="feature-icon"><svg viewBox="0 0 18 18" fill="none"><path d="M3 3.5h12v11H3zM3 6.8h12M6.8 6.8v7.7m4.4-7.7v7.7" stroke="currentColor" stroke-width="1.3"/></svg></span><h3>Thiết kế bảng</h3><p>Thay đổi định nghĩa cột và xem câu lệnh DDL trước khi áp dụng.</p></article>
+          <article class="feature"><span class="feature-icon"><svg viewBox="0 0 18 18" fill="none"><path d="M5 7V5.7a4 4 0 0 1 8 0V7m-9 0h10v8H4z" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="10.5" r="1" fill="currentColor"/></svg></span><h3>Kết nối qua SSH</h3><p>Tạo SSH tunnel khi database nằm trong mạng riêng hoặc máy chủ từ xa.</p></article>
+        </div>
+      </section>
+
+      <section class="shell content" id="bat-dau" style="padding-top:0">
+        <div class="workflow">
+          <div class="workflow-copy">
+            <div class="section-kicker">Bắt đầu trong vài bước</div>
+            <h2>Kết nối database.<br />Rồi cứ làm việc.</h2>
+            <p>ShuraDB chạy trên máy Windows của bạn. Thêm thông tin kết nối MySQL/MariaDB, chọn kết nối và bắt đầu khám phá schema.</p>
+            <div class="steps">
+              <div class="step"><span class="step-num">01</span><div><strong>Tải bộ cài Windows</strong><p>Không cần cài Node.js hay MySQL trên máy chạy ứng dụng.</p></div></div>
+              <div class="step"><span class="step-num">02</span><div><strong>Tạo kết nối</strong><p>Nhập thông tin máy chủ hoặc cấu hình SSH tunnel nếu cần.</p></div></div>
+              <div class="step"><span class="step-num">03</span><div><strong>Mở bảng hoặc viết truy vấn</strong><p>Duyệt dữ liệu, cập nhật bản ghi và quản lý cấu trúc bảng.</p></div></div>
+            </div>
+          </div>
+          <div class="code-card" aria-label="Minh họa truy vấn SQL">
+            <div class="code-head"><span>query.sql</span><span>MySQL</span></div>
+            <div class="code-content"><div class="muted">-- Khám phá dữ liệu của bạn</div><div><span class="key">SELECT</span> id, name, status</div><div><span class="key">FROM</span> <span class="op">customers</span></div><div><span class="key">WHERE</span> status = <span class="val">'active'</span></div><div><span class="key">ORDER BY</span> created_at <span class="op">DESC</span></div><div><span class="key">LIMIT</span> 100;</div></div>
+            <div class="code-foot">Ready to run <span style="float:right;color:#c8f169">▶ Execute</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="shell content" style="padding-top:0">
+        <div class="download-section">
+          <div><div class="section-kicker">ShuraDB cho Windows</div><h2>Kết nối xong, bắt đầu thôi.</h2><p id="bottom-version">Tải phiên bản mới nhất cho Windows 10/11 · x64.</p></div>
+          <a class="button button-primary" id="download-bottom" href="https://github.com/hienl-019/shuradb-releases/releases/latest" target="_blank" rel="noreferrer"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 2.8v9.1m0 0 3.3-3.3M10 11.9 6.7 8.6M3.8 13.7v2.5h12.4v-2.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Tải bản mới nhất</span></a>
+        </div>
+      </section>
+    </main>
+
+    <footer><div class="shell footer-row"><span>© <span id="year"></span> ShuraDB · Công cụ desktop cho MySQL & MariaDB</span><div class="footer-links"><a href="https://github.com/hienl-019/shuradb-releases/releases/latest" target="_blank" rel="noreferrer">GitHub Releases</a><a href="https://github.com/hienl-019/shuradb-releases" target="_blank" rel="noreferrer">Distribution repo</a></div></div></footer>
+
+    <script>
+      (() => {
+        const releasePage = 'https://github.com/hienl-019/shuradb-releases/releases/latest'
+        const api = 'https://api.github.com/repos/hienl-019/shuradb-releases/releases/latest'
+        const versionEl = document.querySelector('#version')
+        const releaseNote = document.querySelector('#release-note')
+        const mainButton = document.querySelector('#download-main')
+        const bottomButton = document.querySelector('#download-bottom')
+
+        document.querySelector('#year').textContent = new Date().getFullYear()
+        mainButton.href = releasePage
+        bottomButton.href = releasePage
+
+        fetch(api, { headers: { Accept: 'application/vnd.github+json' } })
+          .then((response) => {
+            if (!response.ok) throw new Error('Release info unavailable')
+            return response.json()
+          })
+          .then((release) => {
+            const installer = release.assets?.find((asset) => /^ShuraDB-Setup-.*\.exe$/i.test(asset.name))
+            const version = release.tag_name || 'Bản mới nhất'
+            versionEl.textContent = `${version} · cập nhật ${new Intl.DateTimeFormat('vi-VN', { dateStyle: 'medium' }).format(new Date(release.published_at || release.created_at))}`
+            document.querySelector('#mock-version').textContent = `· ${version}`
+            document.querySelector('#bottom-version').textContent = `${version} · Windows 10/11 · x64 · Miễn phí.`
+
+            if (installer?.browser_download_url) {
+              for (const button of [mainButton, bottomButton]) button.href = installer.browser_download_url
+              document.querySelector('#download-label').textContent = `Tải ${version}`
+              releaseNote.textContent = `${(installer.size / 1024 / 1024).toFixed(0)} MB · ${installer.download_count.toLocaleString('vi-VN')} lượt tải`
+            } else {
+              releaseNote.textContent = 'Mở release để xem bộ cài và ghi chú phiên bản.'
+            }
+          })
+          .catch(() => {
+            versionEl.textContent = 'Xem phiên bản mới nhất trên GitHub Releases'
+            document.querySelector('#bottom-version').textContent = 'Windows 10/11 · x64 · Chọn bộ cài trong mục Assets của release.'
+            releaseNote.textContent = 'Thông tin phiên bản tạm thời chưa tải được; trang Releases vẫn luôn sẵn sàng.'
+          })
+      })()
+    </script>
+  </body>
+</html>
